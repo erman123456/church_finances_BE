@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_POSTGRESQL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  password    String? // Optional, since SSO users might not have a password
+  name        String
+  ssoProvider String? // e.g., 'google', 'facebook', etc.
+  ssoId       String?   @unique // Unique ID from the SSO provider
+  accounts    Account[] // One-to-many relationship with Account
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Account {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  user        User          @relation(fields: [userId], references: [id])
+  balance     Float         @default(0.0)
+  currency    String        @default("IDR")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
+  Label       Label[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id             Int             @id @default(autoincrement())
+  accountId      Int
+  account        Account         @relation(fields: [accountId], references: [id])
+  labelId        Int
+  label          Label           @relation(fields: [labelId], references: [id])
+  amount         Float
+  type           TransactionType
+  statusApproval StatusApproval
+  reason         String          @default("")
+  createdAt      DateTime        @default(now())
+
+  @@index([accountId])
+  @@index([labelId])
+}
+
+model Label {
+  id          Int           @id @default(autoincrement())
+  name        String
+  accountId   Int?
+  Account     Account?      @relation(fields: [accountId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  transaction Transaction[]
+
+  @@index([accountId])
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum StatusApproval {
+  APRROVED
+  REJECT
+  MODIFY
+}
