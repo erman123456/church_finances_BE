@@ -5,17 +5,18 @@ import { IsNumber, IsString } from "class-validator";
 export class CreateAccountDto {
     @ApiProperty({
         required: true,
-        title: "Username",
-        example: "banon",
-        description: "Masukkan username anda"
+        title: "UserId",
+        example: "123123",
+        description: "Please insert the UserId"
     })
     @IsNumber()
     userId: number;
+
     @ApiProperty({
         required: true,
         title: "Username",
-        example: "banon",
-        description: "Masukkan username anda"
+        example: "2000",
+        description: "Please insert the UserId"
     })
     @IsNumber()
     balance: number;
@@ -23,7 +24,7 @@ export class CreateAccountDto {
     @ApiProperty({
         required: false,
         title: "Username",
-        example: "banon",
+        example: "Test",
         description: "Masukkan username anda"
     })
     @IsString()
