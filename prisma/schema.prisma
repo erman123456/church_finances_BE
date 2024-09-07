@@ -17,7 +17,7 @@ model User {
   accounts    Account[] // One-to-many relationship with Account
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 model Account {
@@ -28,7 +28,7 @@ model Account {
   currency    String        @default("IDR")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
   Transaction Transaction[]
   Label       Label[]
 
@@ -47,7 +47,7 @@ model Transaction {
   reason         String          @default("")
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  deletedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
 
   @@index([accountId])
   @@index([labelId])
@@ -60,7 +60,7 @@ model Label {
   Account     Account?      @relation(fields: [accountId], references: [id])
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
   transaction Transaction[]
 
   @@index([accountId])

@@ -16,8 +16,7 @@ export class AuthGuard implements CanActivate {
       console.log('No Account');
       throw new ForbiddenException([{ isTokenMissing: 'Token is Required' }]);
     }
-    const header_token = request.headers.authorization;
-    const token = header_token.split(' ')[1];
+    const token = request.headers.authorization;
     if (!token) {
       throw new UnauthorizedException();
     }
