@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { IsEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 
 export class CreateAccountDto {
@@ -9,8 +9,8 @@ export class CreateAccountDto {
         example: "123123",
         description: "Please insert the UserId"
     })
-    @IsNumber()
-    userId: number;
+    @IsString()
+    userId: string;
 
     @ApiProperty({
         required: true,
@@ -28,5 +28,6 @@ export class CreateAccountDto {
         description: "Masukkan username anda"
     })
     @IsString()
+    @IsOptional()
     currency?: string;
 }

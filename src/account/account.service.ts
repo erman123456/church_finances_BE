@@ -14,10 +14,10 @@ export class AccountService {
   }
 
   findAll() {
-    return this.prismaService.account.findMany();
+    return this.prismaService.account.findMany({orderBy: {createdAt: 'desc'}});
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.account.findFirst({
       where: {
         id: id,
@@ -25,7 +25,7 @@ export class AccountService {
     });
   }
 
-  update(id: number, updateActorInput: any) {
+  update(id: string, updateActorInput: any) {
     return this.prismaService.account.update({
       where: {
         id: id,
@@ -36,7 +36,7 @@ export class AccountService {
     });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prismaService.account.delete({
       where: {
         id: id,

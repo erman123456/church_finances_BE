@@ -9,8 +9,9 @@ export class CreateLabelDto {
         example: "banon",
         description: "Masukkan AccountId anda"
     })
-    @IsNumber()
-    accountId: number;
+    @IsString()
+    accountId: string;
+    
     @ApiProperty({
         required: true,
         title: "Nmae",

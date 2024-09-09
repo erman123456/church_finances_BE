@@ -15,10 +15,10 @@ export class LabelService {
   }
 
   findAll() {
-    return this.prismaService.label.findMany();
+    return this.prismaService.label.findMany({orderBy: {createdAt: 'desc'}});
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.label.findFirst({
       where: {
         id: id,
@@ -26,7 +26,7 @@ export class LabelService {
     });
   }
 
-  update(id: number, updateActorInput: any) {
+  update(id: string, updateActorInput: any) {
     return this.prismaService.label.update({
       where: {
         id: id,
@@ -37,7 +37,7 @@ export class LabelService {
     });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prismaService.label.delete({
       where: {
         id: id,

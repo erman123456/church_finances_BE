@@ -1,6 +1,7 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { StatusApproval, TransactionType } from "@prisma/client";
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateTransactionDto {
     @ApiProperty({
@@ -9,8 +10,8 @@ export class CreateTransactionDto {
         example: "123123",
         description: "Please insert the AccountId"
     })
-    @IsNumber()
-    accountId: number
+    @IsString()
+    accountId: string
 
     @ApiProperty({
         required: true,
@@ -18,8 +19,8 @@ export class CreateTransactionDto {
         example: "123123",
         description: "Please insert the LabelId"
     })
-    @IsNumber()
-    labelId: number
+    @IsString()
+    labelId: string
 
     @ApiProperty({
         required: true,
@@ -58,5 +59,6 @@ export class CreateTransactionDto {
         description: "Please insert the Status Reason"
     })
     @IsString()
+    @IsOptional()
     reason: string
 }
