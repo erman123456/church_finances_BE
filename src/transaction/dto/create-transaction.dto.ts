@@ -35,7 +35,7 @@ export class CreateTransactionDto {
         required: false,
         title: "Type",
         example: "DEBIT/KREDIT",
-        default: TransactionType.DEBIT,
+        default: TransactionType.DEBET,
         description: "Please insert the Type"
     })
     @IsString()
@@ -48,6 +48,7 @@ export class CreateTransactionDto {
         default: StatusApproval.APRROVED,
         description: "Please insert the Status Approval"
     })
+    @IsOptional()
     @IsString()
     statusApproval: StatusApproval
 

@@ -43,7 +43,7 @@ model Transaction {
   label          Label           @relation(fields: [labelId], references: [id])
   amount         Float
   type           TransactionType
-  statusApproval StatusApproval
+  statusApproval StatusApproval?
   reason         String          @default("")
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -67,7 +67,7 @@ model Label {
 }
 
 enum TransactionType {
-  DEBIT
+  DEBET
   CREDIT
 }
 
