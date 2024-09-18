@@ -30,8 +30,13 @@ export class UserService {
     );
     //if password incorrect throw exception
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
-    // send back the user
-    return this.signToken(user);
+
+    const response = {
+      status: "success",
+      message: "success",
+      data: await this.signToken(user)
+    }
+    return response;
   }
 
   async signUp(signInDto: SignInDto) {
@@ -62,7 +67,7 @@ export class UserService {
 
 
   findAll() {
-    return this.prismaService.user.findMany({orderBy: {createdAt: 'desc'}});
+    return this.prismaService.user.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
   findOne(id: string) {
