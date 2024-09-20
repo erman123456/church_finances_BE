@@ -1,17 +1,20 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignInDto } from './dto/signIn.dto';
 
 import * as jwt from 'jsonwebtoken';
 import * as argon from 'argon2';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { ResponseDto } from 'src/utils/dtos/response.dto';
+import { StatusResponse } from 'src/utils/constans/global.constants';
 
 @Injectable()
 export class UserService {
+  private response = new ResponseDto()
   constructor(
-    private prismaService: PrismaService
-  ) { }
+    private prismaService: PrismaService,
+  ) {
+  }
 
 
   async signIn(signInDto: SignInDto) {
@@ -22,21 +25,26 @@ export class UserService {
       },
     });
     // if user does not exist throw exception
-    if (!user) throw new ForbiddenException('Credentials incorrect');
+    if (!user) {
+      this.response.status = StatusResponse.Fail;
+      this.response.message = 'The user not found in our database';
+      return this.response;
+    }
     //compare password
     const pwMatches = await argon.verify(
       user.password,
       signInDto.password,
     );
     //if password incorrect throw exception
-    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
-
-    const response = {
-      status: "success",
-      message: "success",
-      data: await this.signToken(user)
+    if (!pwMatches) {
+      this.response.status = StatusResponse.Fail;
+      this.response.message = 'The Credentials incorrect';
+      return this.response;
     }
-    return response;
+    this.response.status = StatusResponse.Success;
+    this.response.message = 'Successfully to process'
+    this.response.data = await this.signToken(user);
+    return this.response;
   }
 
   async signUp(signInDto: SignInDto) {
@@ -56,45 +64,96 @@ export class UserService {
         },
       }).catch((e) => {
         console.log(`account create ${e}`)
-        throw new ExceptionsHandler(e)
+        this.response.status = StatusResponse.Error;
+        this.response.message = e.message
+        return this.response;
       })
     }).catch((e) => {
-      console.log(`user create ${e}`)
-      throw new ExceptionsHandler(e)
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
     })
-    return this.signToken(signInDto);
+    this.response.status = StatusResponse.Success;
+    this.response.message = 'Successfully to process'
+    this.response.data = await this.signToken(signInDto);
+    return this.response;
   }
 
 
-  findAll() {
-    return this.prismaService.user.findMany({ orderBy: { createdAt: 'desc' } });
+  async findAll() {
+    try {
+      const data = await this.prismaService.user.findMany({ orderBy: { createdAt: 'desc' } });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
   }
 
-  findOne(id: string) {
-    return this.prismaService.user.findFirst({
-      where: {
-        id: id,
-      },
-    });
+  async findOne(id: string) {
+    try {
+      const data = await this.prismaService.user.findFirst({
+        where: {
+          id: id,
+        },
+      });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
   }
 
-  update(id: string, updateActorInput: any) {
-    return this.prismaService.user.update({
-      where: {
-        id: id,
-      },
-      data: {
-        ...updateActorInput,
-      },
-    });
+  async update(id: string, updateUserInput: any) {
+    try {
+      const data = await this.prismaService.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          ...updateUserInput,
+        },
+      });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
+
   }
 
-  remove(id: string) {
-    return this.prismaService.user.delete({
-      where: {
-        id: id,
-      },
-    });
+  async remove(id: string) {
+    try {
+      const data = await this.prismaService.user.delete({
+        where: {
+          id: id,
+        },
+      });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
   }
   async signToken(
     signInDto: SignInDto,

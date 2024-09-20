@@ -5,9 +5,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { AccountService } from 'src/account/account.service';
 import { TransactionType } from '@prisma/client';
+import { ResponseDto } from 'src/utils/dtos/response.dto';
+import { StatusResponse } from 'src/utils/constans/global.constants';
 
 @Injectable()
 export class TransactionService {
+  private response = new ResponseDto()
   constructor(
     private prismaService: PrismaService,
     private accountService: AccountService
@@ -36,34 +39,80 @@ export class TransactionService {
     } catch (e) { throw new ExceptionsHandler(e) }
   }
 
-  findAll() {
-    return this.prismaService.transaction.findMany({ orderBy: { createdAt: 'desc' } });
+
+  async findAll() {
+    try {
+      const data = await this.prismaService.user.findMany({ orderBy: { createdAt: 'desc' } });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
   }
 
-  findOne(id: string) {
-    return this.prismaService.transaction.findFirst({
-      where: {
-        id: id,
-      },
-    });
+  async findOne(id: string) {
+    try {
+      const data = await this.prismaService.user.findFirst({
+        where: {
+          id: id,
+        },
+      });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
   }
 
-  update(id: string, updateActorInput: any) {
-    return this.prismaService.transaction.update({
-      where: {
-        id: id,
-      },
-      data: {
-        ...updateActorInput,
-      },
-    });
+  async update(id: string, updateTransactionInput: any) {
+    try {
+      const data = await this.prismaService.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          ...updateTransactionInput,
+        },
+      });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
+
   }
 
-  remove(id: string) {
-    return this.prismaService.transaction.delete({
-      where: {
-        id: id,
-      },
-    });
+  async remove(id: string) {
+    try {
+      const data = await this.prismaService.user.delete({
+        where: {
+          id: id,
+        },
+      });
+      this.response.status = StatusResponse.Success;
+      this.response.message = 'Successfully to process'
+      this.response.data = data
+      return this.response;
+    }
+    catch (e) {
+      this.response.status = StatusResponse.Error;
+      this.response.message = e.message
+      return this.response;
+    }
   }
 }

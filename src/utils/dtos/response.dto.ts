@@ -1,21 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString } from "class-validator";
+import { StatusResponse } from "../constans/global.constants";
 
-export class SetConfigDTOResponse {
+export class ResponseDto {
     @ApiProperty({
-        example: 200,
-        enum: ['success', 'fail', 'error'],
+        example: StatusResponse.Success,
     })
     @IsString()
     status: string;
-
-    @ApiProperty({ example: 'CONFIG_SYSTEM_UPDATE' })
-    @IsString()
-    transaction_classify: string;
 
     @ApiProperty({ example: 'Application Config Updated Successfully' })
     @IsString()
     message: string;
 
-    payload: any;
+    data: any;
 }
