@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { LabelService } from './label.service';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { UpdateLabelDto } from './dto/update-label.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { query } from 'express';
+import { QueryLabelDto } from './dto/query-label';
 
 
 @UseGuards(AuthGuard)
@@ -15,15 +17,21 @@ export class LabelController {
     return this.labelService.create(createLabelDto);
   }
 
-  @Get()
+  @Get('/all')
   findAll() {
     return this.labelService.findAll();
   }
 
+  @Get()
+  findOneByQuery(@Body() query: QueryLabelDto) {
+    return this.labelService.findOneByQuery(query);
+  }
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.labelService.findOne(id);
   }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLabelDto: UpdateLabelDto) {

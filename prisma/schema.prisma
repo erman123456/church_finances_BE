@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL_POSTGRESQL")
+  provider = "mysql"
+  url      = env("DATABASE_URL_MYSQL")
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
@@ -18,12 +20,16 @@ model User {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
+
+  @@index([id])
+  @@index([name, deletedAt])
 }
 
 model Account {
   id          String        @id @default(uuid())
   userId      String
   user        User          @relation(fields: [userId], references: [id])
+  accountName String        @default("")
   balance     Float         @default(0.0)
   currency    String        @default("IDR")
   createdAt   DateTime      @default(now())
@@ -32,7 +38,8 @@ model Account {
   Transaction Transaction[]
   Label       Label[]
 
-  @@index([userId])
+  @@index([id])
+  @@index([accountName, userId, deletedAt])
 }
 
 model Transaction {
@@ -42,28 +49,31 @@ model Transaction {
   labelId        String
   label          Label           @relation(fields: [labelId], references: [id])
   amount         Float
+  remark         String          @default("")
   type           TransactionType
-  statusApproval StatusApproval?
+  statusApproval StatusApproval
   reason         String          @default("")
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   deletedAt      DateTime?
 
-  @@index([accountId])
-  @@index([labelId])
+  @@index([id])
+  @@index([accountId, labelId, deletedAt])
 }
 
 model Label {
-  id          String        @id @default(uuid())
-  name        String
-  accountId   String?
-  Account     Account?      @relation(fields: [accountId], references: [id])
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime?
-  transaction Transaction[]
+  id            String        @id @default(uuid())
+  name          String
+  labelParentId String?
+  accountId     String?
+  account       Account?      @relation(fields: [accountId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+  transaction   Transaction[]
 
-  @@index([accountId])
+  @@index([id])
+  @@index([accountId, name, deletedAt])
 }
 
 enum TransactionType {
@@ -72,7 +82,8 @@ enum TransactionType {
 }
 
 enum StatusApproval {
+  CREATED
   APRROVED
-  REJECT
-  MODIFY
+  REJECTED
+  MODIFYED
 }

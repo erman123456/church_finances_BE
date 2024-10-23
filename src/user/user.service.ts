@@ -60,7 +60,8 @@ export class UserService {
       await this.prismaService.account.create({
         data: {
           userId: res.id,
-          balance: 0
+          balance: 0,
+          accountName: "Kontribusi Natal"
         },
       }).catch((e) => {
         console.log(`account create ${e}`)
@@ -139,10 +140,13 @@ export class UserService {
 
   async remove(id: string) {
     try {
-      const data = await this.prismaService.user.delete({
+      const data = await this.prismaService.user.update({
         where: {
           id: id,
         },
+        data: {
+          deletedAt: new Date()
+        }
       });
       this.response.status = StatusResponse.Success;
       this.response.message = 'Successfully to process'

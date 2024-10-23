@@ -32,6 +32,15 @@ export class CreateTransactionDto {
     amount: number
 
     @ApiProperty({
+        title: "Ammount Before",
+        example: "200000",
+        description: "Please insert the Amount"
+    })
+    @IsNumber()
+    @IsOptional()
+    amountBefore: number
+
+    @ApiProperty({
         required: false,
         title: "Type",
         example: "DEBIT/KREDIT",
@@ -40,6 +49,16 @@ export class CreateTransactionDto {
     })
     @IsString()
     type: TransactionType
+
+    @ApiProperty({
+        title: "Type",
+        example: "DEBIT/KREDIT",
+        default: TransactionType.DEBET,
+        description: "Please insert the Type"
+    })
+    @IsString()
+    @IsOptional()
+    typeBefore: TransactionType
 
     @ApiProperty({
         required: false,

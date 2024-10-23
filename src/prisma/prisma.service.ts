@@ -3,11 +3,10 @@ import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 export class PrismaService extends PrismaClient {
   constructor(config: ConfigService) {
-    console.log("erman gg", process.env.DATABASE_URL_POSTGRESQL)
     super({
       datasources: {
         db: {
-          url: process.env.DATABASE_URL_POSTGRESQL,
+          url: process.env.DATABASE_URL_MYSQL,
         },
       },
     });
