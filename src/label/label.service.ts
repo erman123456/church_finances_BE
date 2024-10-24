@@ -80,6 +80,16 @@ export class LabelService {
            deletedAt: null,
            ...(query.name ? { name: { search: query.name } } : {})
           },
+          include: {
+            transaction: {
+              select: {
+                amount: true
+              },
+              where: {
+                deletedAt: null
+              },
+            },
+          },
         orderBy: { createdAt: 'desc' },
       });
       this.response.status = StatusResponse.Success;
